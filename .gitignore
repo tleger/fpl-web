@@ -1,0 +1,41 @@
+# Environment files
+.env
+
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor settings
+.idea/
+.vscode/
+
+# Build files
+dist/
+build/
+
+# Static files
+public/
+
+# Tailwind CSS config file (optional; include it if you don't want to version-control it)
+tailwind.config.js
+
+# Temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Dependency lock files (if you want to exclude them)
+package-lock.json
+yarn.lock
+
+# Generated files (add any other relevant folders if applicable)
+coverage/
