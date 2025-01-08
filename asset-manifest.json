@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/fpl-web/static/css/main.c951df52.css",
+    "main.js": "/fpl-web/static/js/main.505ecd1c.js",
+    "index.html": "/fpl-web/index.html",
+    "main.c951df52.css.map": "/fpl-web/static/css/main.c951df52.css.map",
+    "main.505ecd1c.js.map": "/fpl-web/static/js/main.505ecd1c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c951df52.css",
+    "static/js/main.505ecd1c.js"
+  ]
+}
