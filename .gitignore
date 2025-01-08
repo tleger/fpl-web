@@ -19,7 +19,6 @@ Thumbs.db
 
 # Build files
 dist/
-build/
 
 # Static files
 public/
