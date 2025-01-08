@@ -43,21 +43,7 @@ export interface Player {
 }
 
 // API functions
-export const getPlayers = () => api.get<Player[]>('/players').then(res => res.data);
-
-export const getCurrentGameweek = () => api.get<number>('/gameweek/current').then(res => res.data);
-
 export const getTeamPicks = (teamId: string) => api.get(`/team/${teamId}/picks`).then(res => res.data);
-
-export const getPlayerPredictions = (playerId: number, lastGw?: number) => 
-  api.get<PlayerPrediction[]>(`/predictions/player/${playerId}`, {
-    params: { last_gw: lastGw }
-  }).then(res => res.data);
-
-export const getPlayerPredictionSummary = (playerId: number, lastGw?: number) => 
-  api.get(`/predictions/player/${playerId}/summary`, {
-    params: { last_gw: lastGw }
-  }).then(res => res.data);
 
 export const optimizeTeam = ({
   existingTeam,

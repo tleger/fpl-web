@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import SoccerField from './components/SoccerField';
 import BenchDisplay from './components/BenchDisplay';
-import { getTeamPicks, optimizeTeam } from './api/client';
+import { getTeamPicks, optimizeTeam } from './api/client.ts';
 
 const queryClient = new QueryClient();
 
