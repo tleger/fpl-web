@@ -23,7 +23,7 @@ const SoccerField = ({ starting11, captains }) => {
 
       {/* Players */}
       <div className="relative h-full flex flex-col py-8">
-        <div className="absolute top-[20%] left-0 right-0 flex justify-center">
+        <div className="absolute top-[26%] left-0 right-0 flex justify-center">
           <div className="grid gap-2" style={{
             gridTemplateColumns: `repeat(${fwd.length}, minmax(0, 1fr))`,
             gap: '0.5rem'
@@ -32,7 +32,7 @@ const SoccerField = ({ starting11, captains }) => {
           </div>
         </div>
 
-        <div className="absolute top-[42%] left-0 right-0 flex justify-center">
+        <div className="absolute top-[46%] left-0 right-0 flex justify-center">
           <div className="grid gap-2" style={{
             gridTemplateColumns: `repeat(${mid.length}, minmax(0, 1fr))`,
             gap: '0.5rem'
@@ -41,7 +41,7 @@ const SoccerField = ({ starting11, captains }) => {
           </div>
         </div>
 
-        <div className="absolute top-[64%] left-0 right-0 flex justify-center">
+        <div className="absolute top-[66%] left-0 right-0 flex justify-center">
           <div className="grid gap-2" style={{
             gridTemplateColumns: `repeat(${def.length}, minmax(0, 1fr))`,
             gap: '0.5rem'
@@ -64,7 +64,7 @@ const PlayerCard = ({ player, isCaptain }) => {
   const isLongName = player.web_name.length > 10;
   
   return (
-    <div className={`${isCaptain ? 'bg-yellow-50/90' : 'bg-white/90'} backdrop-blur-sm rounded-lg px-1 py-1 shadow-md transform transition-transform hover:scale-105 w-24 h-14 flex flex-col justify-center items-center mx-1`}>
+    <div className={`${isCaptain ? 'bg-yellow-200/90' : 'bg-white/90'} backdrop-blur-sm rounded-lg px-1 py-1 shadow-md transform transition-transform hover:scale-105 w-24 h-14 flex flex-col justify-center items-center mx-1`}>
       <div className={`font-bold text-gray-800 text-center w-full ${isLongName ? 'text-xs' : 'text-sm'}`}>
         {player.web_name}
       </div>

@@ -45,6 +45,8 @@ export interface Player {
 // API functions
 export const getTeamPicks = (teamId: string) => api.get(`/team/${teamId}/picks`).then(res => res.data);
 
+export const getTopPlayersByPosition = (position: string) => api.get(`/top_players/${position}`).then(res => res.data);
+
 export const optimizeTeam = ({
   existingTeam,
   numFreeTransfers = 2,
