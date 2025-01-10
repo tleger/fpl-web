@@ -22,7 +22,7 @@ dist/
 build/
 
 # Static files
-public/
+# public/ needed for github action to work.
 
 # Tailwind CSS config file (optional; include it if you don't want to version-control it)
 tailwind.config.js
