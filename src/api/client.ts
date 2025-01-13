@@ -36,6 +36,8 @@ export const getTeamPicks = (teamId: string) => api.get(`/team/${teamId}/picks`)
 
 export const getTopPlayersByPosition = (position: string) => api.get(`/top_players/${position}`).then(res => res.data);
 
+export const getStaticData = () => api.get(`/data/static_data`).then(res => res.data);
+
 export const optimizeTeam = ({
   existingTeam,
   numFreeTransfers = 2,
@@ -59,18 +61,24 @@ export const transferOptions = ({
   numFreeTransfers = 2,
   totalBudget = 1000,
   numCaptains = 1,
-  numSuggestions = 1
+  numSuggestions = 1,
+  mustInclude = [],
+  mustExclude = []
 }: {
   existingTeam?: number[];
   numFreeTransfers?: number;
   totalBudget?: number;
   numCaptains?: number;
   numSuggestions?: number;
+  mustInclude?: number[];
+  mustExclude?: number[];
 }) => 
   api.post('/team/transfer_options', {
     existing_team: existingTeam,
     num_free_transfers: numFreeTransfers,
     total_budget: totalBudget,
     num_captains: numCaptains,
-    num_suggestions: numSuggestions
+    num_suggestions: numSuggestions,
+    must_include: mustInclude,
+    must_exclude: mustExclude
   }).then(res => res.data)

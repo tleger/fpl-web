@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
+import Select from 'react-select';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import SoccerField from './components/SoccerField';
 import BenchDisplay from './components/BenchDisplay';
 import TopPlayersTable from './components/TopPlayersTable.js';
-import { getTeamPicks, getTopPlayersByPosition, optimizeTeam, transferOptions } from './api/client.ts';
+import { getTeamPicks, getTopPlayersByPosition, getStaticData, transferOptions } from './api/client.ts';
 
 const queryClient = new QueryClient();
 
@@ -17,6 +18,15 @@ function TeamOptimizer() {
     num_suggestions: 1
   });
 
+  const { data: playersData, isLoading: isPlayersLoading } = useQuery('playersList', getStaticData);
+
+  const playersList = playersData
+    ? playersData.map((player) => ({
+      label: player.web_name, // Display name in the dropdown
+      value: player.id,   // Unique ID for form submission
+    }))
+    : [];
+
   const [result, setResult] = useState({ results: [], best_result: null, transfers_in: [], transfers_out: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -24,19 +34,28 @@ function TeamOptimizer() {
   const [showTeamIdTooltip, setShowTeamIdTooltip] = useState(false);
   const [showTransferSuggestionTooltip, setTransferSuggestionTooltip] = useState(false);
 
+  const handleSelectChange = (selectedOptions, actionMeta) => {
+    const { name } = actionMeta;
+    const values = selectedOptions ? selectedOptions.map((option) => option.value) : [];
+    setFormData((prev) => ({
+      ...prev,
+      [name]: values, // Add only the player IDs (values) to the form data
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
     try {
-      debugger;
       const apiResponse = await transferOptions({
         existingTeam: formData.current_team?.map(p => p.element),
         numFreeTransfers: formData.free_transfers,
         totalBudget: formData.total_budget * 10,
         numCaptains: 1,
-        numSuggestions: formData.num_suggestions
+        numSuggestions: formData.num_suggestions,
+        mustInclude: formData.must_include,
+        mustExclude: formData.must_exclude
       });
       const results = apiResponse
       const best_result = apiResponse[0]
@@ -118,10 +137,8 @@ function TeamOptimizer() {
   const { data: top_midfielders, isLoadingMid, errorMid } = useQuery(['topPlayers', 'mid'], () => getTopPlayersByPosition('mid'))
   const { data: top_forwards, isLoadingFwd, errorFwd } = useQuery(['topPlayers', 'fwd'], () => getTopPlayersByPosition('fwd'))
 
-
-
   return (
-    <div class="absolute top-0 z-[-2] min-h-screen w-screen bg-slate-50 bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)] py-12">
+    <div className="absolute top-0 z-[-2] min-h-screen w-screen bg-slate-50 bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)] py-12">
     {/* <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12"> */}
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-6xl font-bold text-slate-900 text-center mb-12">FPL Genius</h1>
@@ -252,6 +269,34 @@ function TeamOptimizer() {
                       The number of transfer suggestions to provide. The more requested, the longer the calculation will take.
                     </div>
                   )}
+                </div>
+
+                {/* Must Include Players */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700">Final Team Must Include</label>
+                  <Select
+                    isMulti
+                    name="must_include"
+                    options={playersList}
+                    isLoading={isPlayersLoading}
+                    onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
+                    className="mt-1"
+                    placeholder="Type to search players..."
+                  />
+                </div>
+
+                {/* Must Exclude Players */}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700">Final Team Must Exclude</label>
+                  <Select
+                    isMulti
+                    name="must_exclude"
+                    options={playersList}
+                    isLoading={isPlayersLoading}
+                    onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
+                    className="mt-1"
+                    placeholder="Type to search players..."
+                  />
                 </div>
 
                 <button
