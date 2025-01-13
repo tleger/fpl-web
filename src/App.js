@@ -184,15 +184,16 @@ function TeamOptimizer() {
 
                 <div className="relative" onMouseEnter={() => setShowTeamIdTooltip(true)} onMouseLeave={() => setShowTeamIdTooltip(false)}>
                   <label className="block text-sm font-semibold text-gray-700">
-                    FPL Team ID {' '}
+                    FPL Team ID (Available in url of FPL {' '} 
                     <a
                       href="https://fantasy.premierleague.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 underline"
+                      className="text-blue-500"
                     >
-                      (Available in url of FPL 'Points' tab)
+                      Points
                     </a>
+                    {' '} tab)
                   </label>
                   <div className="mt-1 flex gap-2">
                     <input
@@ -304,7 +305,7 @@ function TeamOptimizer() {
                   disabled={loading}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                 >
-                  {loading ? 'Optimizing...' : 'Optimize Team'}
+                  {loading ? 'Optimizing...' : 'Unleash the Genius'}
                 </button>
               </form>
 
@@ -397,9 +398,11 @@ function TeamOptimizer() {
                   </div>
                 </div>
               ) : (
-                <div className="h-full flex items-center justify-center text-gray-400">
+                <div className="h-full flex items-center justify-center text-gray-400 text-center">
+                  <p>
                     Load and Optimize your team to see your best starting XI.<br />
-                    If you don't load your team you will see the best wildcard dream team.
+                    If no team is loaded, the best team for this budget will be displayed.
+                    </p>
                 </div>
               )}
             </div>
@@ -407,7 +410,8 @@ function TeamOptimizer() {
         </div>
 
         <div className="mt-8">
-          <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">Predicted Points (Next 5 Gameweeks)</h2>
+          <h2 className="text-2xl font-bold text-gray-700 text-center mb-2">Top Players</h2>
+          <h3 className="text-xl font-bold text-gray-700 text-center mb-6">Genius Predicted Score - Next 5 Gameweeks</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Goalkeepers */}
             <div className="space-y-6">

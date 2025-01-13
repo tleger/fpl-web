@@ -3,13 +3,13 @@ import React from 'react';
 const TopPlayersTable = ({ players, position }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
-      <h3 className="text-lg font-bold mb-4 text-center capitalize">Top 10 {position}s</h3>
+      <h3 className="text-lg font-bold mb-4 text-center capitalize">{position}s</h3>
       <table className="table-auto w-full text-sm text-left">
         <thead>
           <tr>
             <th className="px-4 py-2 font-semibold">Player</th>
             <th className="px-4 py-2 font-semibold">Cost (£m)</th>
-            <th className="px-4 py-2 font-semibold">Forecast Avg Points</th>
+            <th className="px-4 py-2 font-semibold">Predicted Points</th>
           </tr>
         </thead>
         <tbody>
