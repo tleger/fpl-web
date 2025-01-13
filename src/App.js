@@ -218,27 +218,6 @@ function TeamOptimizer() {
               {/* Squad Details */}
               {result && (
                 <div className="mt-8 space-y-6">
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <h4 className="font-medium text-gray-900 mb-3">Bench</h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      {result.bench.map(player => (
-                        <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
-                          <span className="font-medium">{player.web_name}</span>
-                          <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="bg-yellow-200 rounded-lg p-4">
-                    <h4 className="font-medium text-yellow-900 mb-3">Captain</h4>
-                    {result.captains.map(player => (
-                      <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
-                        <span className="font-medium">{player.web_name}</span>
-                        <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
-                      </div>
-                    ))}
-                  </div>
 
                   {result.transfers_in?.length > 0 && (
                     <div className="bg-gray-50 rounded-lg p-4">
@@ -265,6 +244,29 @@ function TeamOptimizer() {
                       </div>
                     </div>
                   )}
+
+                  <div className="bg-yellow-200 rounded-lg p-4">
+                    <h4 className="font-medium text-yellow-900 mb-3">Captain</h4>
+                    {result.captains.map(player => (
+                      <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
+                        <span className="font-medium">{player.web_name}</span>
+                        <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
+                      </div>
+                    ))}
+                  </div>
+
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-medium text-gray-900 mb-3">Bench</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      {result.bench.map(player => (
+                        <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
+                          <span className="font-medium">{player.web_name}</span>
+                          <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
                   {totalValue > 0 && (
                     <div className="text-sm text-gray-600">
