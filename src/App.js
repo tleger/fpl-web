@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider, useQuery } from 'react-query';
 import SoccerField from './components/SoccerField';
 import BenchDisplay from './components/BenchDisplay';
 import TopPlayersTable from './components/TopPlayersTable.js';
-import { getTeamPicks, getTopPlayersByPosition, optimizeTeam } from './api/client.ts';
+import { getTeamPicks, getTopPlayersByPosition, optimizeTeam, transferOptions } from './api/client.ts';
 
 const queryClient = new QueryClient();
 
@@ -13,12 +13,16 @@ function TeamOptimizer() {
     total_budget: 100,
     must_include: [],
     must_exclude: [],
-    fpl_id: ''
+    fpl_id: '',
+    num_suggestions: 1
   });
 
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState({ results: [], best_result: null, transfers_in: [], transfers_out: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showBudgetTooltip, setShowBudgetTooltip] = useState(false);
+  const [showTeamIdTooltip, setShowTeamIdTooltip] = useState(false);
+  const [showTransferSuggestionTooltip, setTransferSuggestionTooltip] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,13 +30,19 @@ function TeamOptimizer() {
     setError(null);
 
     try {
-      const result = await optimizeTeam({
+      debugger;
+      const apiResponse = await transferOptions({
         existingTeam: formData.current_team?.map(p => p.element),
         numFreeTransfers: formData.free_transfers,
         totalBudget: formData.total_budget * 10,
-        numCaptains: 1
+        numCaptains: 1,
+        numSuggestions: formData.num_suggestions
       });
-      setResult(result);
+      const results = apiResponse
+      const best_result = apiResponse[0]
+      const transfers_in = results.map(r => r.transfers_in)
+      const transfers_out = results.map(r => r.transfers_out)
+      setResult({ results, best_result, transfers_in, transfers_out });
     } catch (err) {
       console.error('Optimization error:', err);
       setError(err.response?.data?.detail ||
@@ -56,7 +66,8 @@ function TeamOptimizer() {
       }
       setFormData(prev => ({
         ...prev,
-        current_team: response.picks
+        current_team: response.picks,
+        total_budget: response.entry_history.value / 10
       }));
     } catch (err) {
       console.error('Team loading error:', err);
@@ -85,6 +96,9 @@ function TeamOptimizer() {
           // total_budget should allow decimal values
           newValue = parseFloat(value) || '';
           break;
+        case 'num_suggestions':
+          newValue = parseInt(value, 10) || '';
+          break;
         default:
           // For all other fields, just use the raw value
           newValue = value;
@@ -97,19 +111,22 @@ function TeamOptimizer() {
     });
   };
 
-  const totalValue = result?.full_squad?.reduce((sum, p) => sum + p.now_cost, 0) || 0;
+  const totalValue = result?.best_result?.full_squad?.reduce((sum, p) => sum + p.now_cost, 0) || 0;
 
   const { data: top_goalkeepers, isLoadingGkp, errorGkp } = useQuery(['topPlayers', 'gkp'], () => getTopPlayersByPosition('gkp'))
   const { data: top_defenders, isLoadingDef, errorDef } = useQuery(['topPlayers', 'def'], () => getTopPlayersByPosition('def'))
   const { data: top_midfielders, isLoadingMid, errorMid } = useQuery(['topPlayers', 'mid'], () => getTopPlayersByPosition('mid'))
   const { data: top_forwards, isLoadingFwd, errorFwd } = useQuery(['topPlayers', 'fwd'], () => getTopPlayersByPosition('fwd'))
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-6xl font-bold text-white text-center mb-12">FPL Genius</h1>
 
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+
+  return (
+    <div class="absolute top-0 z-[-2] min-h-screen w-screen bg-slate-50 bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)] py-12">
+    {/* <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12"> */}
+      <div className="max-w-7xl mx-auto px-4">
+        <h1 className="text-6xl font-bold text-slate-900 text-center mb-12">FPL Genius</h1>
+
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left Column - Form */}
             <div className="p-8">
@@ -127,7 +144,7 @@ function TeamOptimizer() {
                   />
                 </div>
 
-                <div>
+                <div className="relative" onMouseEnter={() => setShowBudgetTooltip(true)} onMouseLeave={() => setShowBudgetTooltip(false)}>
                   <label className="block text-sm font-semibold text-gray-700">Budget (£m)</label>
                   <input
                     type="number"
@@ -135,13 +152,20 @@ function TeamOptimizer() {
                     value={formData.total_budget}
                     onChange={handleInputChange}
                     min="90"
-                    max="1100"
+                    max="110"
                     step="0.1"
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
+                  {showBudgetTooltip && (
+                    <div className="absolute top-0 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                      Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
+                      the total value of your squad. You may need to tweak your budget down if you have players with lower sale
+                      price than current price.
+                    </div>
+                  )}
                 </div>
 
-                <div>
+                <div className="relative" onMouseEnter={() => setShowTeamIdTooltip(true)} onMouseLeave={() => setShowTeamIdTooltip(false)}>
                   <label className="block text-sm font-semibold text-gray-700">
                     FPL Team ID {' '}
                     <a
@@ -191,14 +215,44 @@ function TeamOptimizer() {
                       </button>
                     )}
                   </div>
+
+                  {showTeamIdTooltip && (
+                    <div className="absolute top-0 left-full ml-2 w-90 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                      Your Team ID is visible in the url of the FPL 'Points' tab. e.g. the XXX in
+                      https://fantasy.premierleague.com/entry/XXX/event/
+                    </div>
+                  )}
                 </div>
 
                 {formData.current_team && (
                   <div className="p-4 bg-blue-50 rounded-md">
                     <h4 className="font-medium text-blue-900">Current Team Loaded</h4>
-                    <p className="text-sm text-blue-700">Team loaded with {formData.current_team.length} players</p>
+                    <p className="text-sm text-blue-700">Team loaded as of last gameweek</p>
                   </div>
                 )}
+
+
+                <div
+                  className="relative"
+                  onMouseEnter={() => setTransferSuggestionTooltip(true)}
+                  onMouseLeave={() => setTransferSuggestionTooltip(false)}
+                >
+                  <label className="block text-sm font-semibold text-gray-700"># Transfer Suggestions</label>
+                  <input
+                    type="number"
+                    name="num_suggestions"
+                    value={formData.num_suggestions}
+                    onChange={handleInputChange}
+                    min="1"
+                    max="5"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  {showTransferSuggestionTooltip && (
+                    <div className="absolute top-0 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                      The number of transfer suggestions to provide. The more requested, the longer the calculation will take.
+                    </div>
+                  )}
+                </div>
 
                 <button
                   type="submit"
@@ -216,38 +270,48 @@ function TeamOptimizer() {
               )}
 
               {/* Squad Details */}
-              {result && (
+              {result?.best_result && (
                 <div className="mt-8 space-y-6">
-
-                  {result.transfers_in?.length > 0 && (
+                  {result?.best_result.transfers_in?.length > 0 && (
                     <div className="bg-gray-50 rounded-lg p-4">
-                      <h4 className="font-medium text-gray-900 mb-3">Transfers</h4>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h5 className="text-sm font-medium text-green-600 mb-2">Transfers In</h5>
-                          {result.transfers_in.map(player => (
-                            <div key={player.id} className="flex justify-between text-green-600 text-sm">
-                              <span>{player.web_name}</span>
-                              <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                      <h4 className="font-medium text-gray-900 mb-3">Transfer Suggestions</h4>
+
+                      {result.transfers_in.map((optionSetIn, index) => (
+                        <div key={index}>
+                          <div className="grid grid-cols-2 gap-6">
+                            <div>
+                              {index === 0 && <h5 className="text-sm font-medium text-green-600 mb-2">Transfers In</h5>}
+                              {optionSetIn.map(player => (
+                                <div key={player.id} className="flex justify-between text-green-600 text-sm">
+                                  <span>{player.web_name}</span>
+                                  <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                                </div>
+                              ))}
                             </div>
-                          ))}
-                        </div>
-                        <div>
-                          <h5 className="text-sm font-medium text-red-600 mb-2">Transfers Out</h5>
-                          {result.transfers_out.map(player => (
-                            <div key={player.id} className="flex justify-between text-red-600 text-sm">
-                              <span>{player.web_name}</span>
-                              <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+
+                            <div>
+                              {index === 0 && <h5 className="text-sm font-medium text-red-600 mb-2">Transfers Out</h5>}
+                              {result.transfers_out[index].map(player => (
+                                <div key={player.id} className="flex justify-between text-red-600 text-sm">
+                                  <span>{player.web_name}</span>
+                                  <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          </div>
+
+                          {index < result.transfers_in.length - 1 && (
+                            <hr className="border-t border-gray-300 my-2" />
+                          )}
                         </div>
-                      </div>
+                      ))}
                     </div>
                   )}
 
+
                   <div className="bg-yellow-200 rounded-lg p-4">
                     <h4 className="font-medium text-yellow-900 mb-3">Captain</h4>
-                    {result.captains.map(player => (
+                    {result?.best_result.captains.map(player => (
                       <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
                         <span className="font-medium">{player.web_name}</span>
                         <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
@@ -256,17 +320,17 @@ function TeamOptimizer() {
                   </div>
 
 
-                  <div className="bg-gray-50 rounded-lg p-4">
+                  {/* <div className="bg-gray-50 rounded-lg p-4">
                     <h4 className="font-medium text-gray-900 mb-3">Bench</h4>
                     <div className="grid grid-cols-2 gap-3">
-                      {result.bench.map(player => (
+                      {result.best_result.bench.map(player => (
                         <div key={player.id} className="bg-white p-3 rounded-md shadow-sm flex justify-between items-center">
                           <span className="font-medium">{player.web_name}</span>
                           <span className="text-sm text-gray-600">£{(player.now_cost / 10).toFixed(1)}m</span>
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
 
                   {totalValue > 0 && (
                     <div className="text-sm text-gray-600">
@@ -279,17 +343,18 @@ function TeamOptimizer() {
 
             {/* Right Column - Soccer Field */}
             <div className="bg-gray-50 p-8">
-              {result ? (
+              {result?.best_result ? (
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-6">Starting XI</h3>
-                  <SoccerField starting11={result.starting_11} captains={result.captains} />
+                  <h3 className="text-xl font-semibold text-gray-900 mb-6">Best Starting XI</h3>
+                  <SoccerField starting11={result.best_result.starting_11} captains={result.best_result.captains} />
                   <div className="mt-6">
-                    <BenchDisplay bench={result.bench} />
+                    <BenchDisplay bench={result.best_result.bench} />
                   </div>
                 </div>
               ) : (
                 <div className="h-full flex items-center justify-center text-gray-400">
-                  Optimize your team to see the starting XI
+                    Load and Optimize your team to see your best starting XI.<br />
+                    If you don't load your team you will see the best wildcard dream team.
                 </div>
               )}
             </div>
@@ -297,36 +362,32 @@ function TeamOptimizer() {
         </div>
 
         <div className="mt-8">
-          <h2 className="text-2xl font-bold text-white text-center mb-6">Predicted Points (Next 5 Gameweeks)</h2>
+          <h2 className="text-2xl font-bold text-gray-700 text-center mb-6">Predicted Points (Next 5 Gameweeks)</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Goalkeepers */}
             <div className="space-y-6">
-              <h3 className="text-xl font-bold text-white text-center">Top Goalkeepers</h3>
-              {isLoadingGkp && <p className="text-white text-center">Loading goalkeepers...</p>}
+              {isLoadingGkp && <p className="text-gray-700 text-center">Loading goalkeepers...</p>}
               {errorGkp && <p className="text-red-500 text-center">Error loading goalkeepers</p>}
               {top_goalkeepers && <TopPlayersTable players={top_goalkeepers} position="goalkeeper" />}
             </div>
 
             {/* Defenders */}
             <div className="space-y-6">
-              <h3 className="text-xl font-bold text-white text-center">Top Defenders</h3>
-              {isLoadingDef && <p className="text-white text-center">Loading defenders...</p>}
+              {isLoadingDef && <p className="text-gray-700 text-center">Loading defenders...</p>}
               {errorDef && <p className="text-red-500 text-center">Error loading defenders</p>}
               {top_defenders && <TopPlayersTable players={top_defenders} position="defender" />}
             </div>
 
             {/* Midfielders */}
             <div className="space-y-6">
-              <h3 className="text-xl font-bold text-white text-center">Top Midfielders</h3>
-              {isLoadingMid && <p className="text-white text-center">Loading midfielders...</p>}
+              {isLoadingMid && <p className="text-gray-700 text-center">Loading midfielders...</p>}
               {errorMid && <p className="text-red-500 text-center">Error loading midfielders</p>}
               {top_midfielders && <TopPlayersTable players={top_midfielders} position="midfielder" />}
             </div>
 
             {/* Forwards */}
             <div className="space-y-6">
-              <h3 className="text-xl font-bold text-white text-center">Top Forwards</h3>
-              {isLoadingFwd && <p className="text-white text-center">Loading forwards...</p>}
+              {isLoadingFwd && <p className="text-gray-700 text-center">Loading forwards...</p>}
               {errorFwd && <p className="text-red-500 text-center">Error loading forwards</p>}
               {top_forwards && <TopPlayersTable players={top_forwards} position="forward" />}
             </div>
@@ -335,7 +396,7 @@ function TeamOptimizer() {
 
 
       </div>
-    </div>
+    </div >
   );
 }
 

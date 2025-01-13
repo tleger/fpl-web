@@ -53,3 +53,24 @@ export const optimizeTeam = ({
     total_budget: totalBudget,
     num_captains: numCaptains
   }).then(res => res.data);
+
+export const transferOptions = ({
+  existingTeam,
+  numFreeTransfers = 2,
+  totalBudget = 1000,
+  numCaptains = 1,
+  numSuggestions = 1
+}: {
+  existingTeam?: number[];
+  numFreeTransfers?: number;
+  totalBudget?: number;
+  numCaptains?: number;
+  numSuggestions?: number;
+}) => 
+  api.post('/team/transfer_options', {
+    existing_team: existingTeam,
+    num_free_transfers: numFreeTransfers,
+    total_budget: totalBudget,
+    num_captains: numCaptains,
+    num_suggestions: numSuggestions
+  }).then(res => res.data)
