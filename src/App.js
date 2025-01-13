@@ -139,7 +139,7 @@ function TeamOptimizer() {
 
   return (
     <div className="absolute top-0 z-[-2] min-h-screen w-screen bg-slate-50 bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)] py-12">
-    {/* <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12"> */}
+      {/* <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12"> */}
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-6xl font-bold text-slate-900 text-center mb-12">FPL Genius</h1>
 
@@ -174,7 +174,7 @@ function TeamOptimizer() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   {showBudgetTooltip && (
-                    <div className="absolute top-0 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                    <div className="absolute top-0 md:left-36 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
                       Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
                       the total value of your squad. You may need to tweak your budget down if you have players with lower sale
                       price than current price.
@@ -184,7 +184,7 @@ function TeamOptimizer() {
 
                 <div className="relative" onMouseEnter={() => setShowTeamIdTooltip(true)} onMouseLeave={() => setShowTeamIdTooltip(false)}>
                   <label className="block text-sm font-semibold text-gray-700">
-                    FPL Team ID (Available in url of FPL {' '} 
+                    FPL Team ID (Available in url of FPL {' '}
                     <a
                       href="https://fantasy.premierleague.com"
                       target="_blank"
@@ -235,7 +235,7 @@ function TeamOptimizer() {
                   </div>
 
                   {showTeamIdTooltip && (
-                    <div className="absolute top-0 left-full ml-2 w-90 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                    <div className="absolute top-0 md:left-36 left-full ml-2 w-96 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
                       Your Team ID is visible in the url of the FPL 'Points' tab. e.g. the XXX in
                       https://fantasy.premierleague.com/entry/XXX/event/
                     </div>
@@ -266,7 +266,7 @@ function TeamOptimizer() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   {showTransferSuggestionTooltip && (
-                    <div className="absolute top-0 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50">
+                    <div className="absolute top-0 md:left-36 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 md:block lg:block hidden">
                       The number of transfer suggestions to provide. The more requested, the longer the calculation will take.
                     </div>
                   )}
@@ -402,7 +402,7 @@ function TeamOptimizer() {
                   <p>
                     Load and Optimize your team to see your best starting XI.<br />
                     If no team is loaded, the best team for this budget will be displayed.
-                    </p>
+                  </p>
                 </div>
               )}
             </div>
