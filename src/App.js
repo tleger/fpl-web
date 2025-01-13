@@ -174,7 +174,7 @@ function TeamOptimizer() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   {showBudgetTooltip && (
-                    <div className="absolute top-0 md:left-36 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                    <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
                       Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
                       the total value of your squad. You may need to tweak your budget down if you have players with lower sale
                       price than current price.
@@ -235,7 +235,7 @@ function TeamOptimizer() {
                   </div>
 
                   {showTeamIdTooltip && (
-                    <div className="absolute top-0 md:left-36 left-full ml-2 w-96 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                    <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-96 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
                       Your Team ID is visible in the url of the FPL 'Points' tab. e.g. the XXX in
                       https://fantasy.premierleague.com/entry/XXX/event/
                     </div>
@@ -266,7 +266,7 @@ function TeamOptimizer() {
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
                   {showTransferSuggestionTooltip && (
-                    <div className="absolute top-0 md:left-36 left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 md:block lg:block hidden">
+                    <div className="absolute top-0 lg:left-full md:left-36 ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 md:block lg:block hidden">
                       The number of transfer suggestions to provide. The more requested, the longer the calculation will take.
                     </div>
                   )}
