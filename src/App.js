@@ -443,6 +443,16 @@ function TeamOptimizer() {
           </div>
         </div>
 
+        {/* Feedback Button */}
+        <div className="mt-12 flex justify-center">
+          <a
+            href="mailto:thomas@fplgenius.com"
+            className="px-6 py-3 text-blue-600 hover:border-b-2 hover:border-blue-600 transition-all duration-200"
+          >
+            Feedback
+          </a>
+        </div>
+
 
       </div>
     </div >
