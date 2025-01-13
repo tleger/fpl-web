@@ -107,7 +107,7 @@ function TeamOptimizer() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-8xl font-bold text-white text-center mb-12">FPL Genius</h1>
+        <h1 className="text-6xl font-bold text-white text-center mb-12">FPL Genius</h1>
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
@@ -142,7 +142,17 @@ function TeamOptimizer() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700">FPL Team ID</label>
+                  <label className="block text-sm font-semibold text-gray-700">
+                    FPL Team ID {' '}
+                    <a
+                      href="https://fantasy.premierleague.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      (Available in url of FPL 'Points' tab)
+                    </a>
+                  </label>
                   <div className="mt-1 flex gap-2">
                     <input
                       type="number"

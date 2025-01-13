@@ -9,17 +9,6 @@ export const api = axios.create({
   },
 });
 
-export interface PlayerPrediction {
-  fixture: number;
-  event: number;
-  kickoff_time: string;
-  opponent_team: number;
-  is_home: boolean;
-  difficulty: number;
-  prediction_4ft: number;
-  prediction_8ft: number;
-}
-
 export interface TeamOptimization {
   full_squad: Player[];
   starting_11: Player[];
