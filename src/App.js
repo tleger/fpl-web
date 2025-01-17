@@ -31,8 +31,12 @@ function TeamOptimizer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showBudgetTooltip, setShowBudgetTooltip] = useState(false);
+  const [showForceIncludeTooltip, setForceIncludeTooltip] = useState(false);
+  const [showForceExcludeTooltip, setForceExcludeTooltip] = useState(false);
   const [showTeamIdTooltip, setShowTeamIdTooltip] = useState(false);
+  const [showFreeTransferTooltip, setFreeTransferTooltip] = useState(false);
   const [showTransferSuggestionTooltip, setTransferSuggestionTooltip] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   
 
   const handleSelectChange = (selectedOptions, actionMeta) => {
@@ -149,7 +153,7 @@ function TeamOptimizer() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left Column - Form */}
             <div className="p-8">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
 
 
                 <div className="relative" onMouseEnter={() => setShowTeamIdTooltip(true)} onMouseLeave={() => setShowTeamIdTooltip(false)}>
@@ -212,7 +216,11 @@ function TeamOptimizer() {
                   )}
                 </div>
 
-                <div>
+                <div
+                  className="relative"
+                  onMouseEnter={() => setFreeTransferTooltip(true)}
+                  onMouseLeave={() => setFreeTransferTooltip(false)}
+                >
                   <label className="block text-sm font-semibold text-gray-700"># Free Transfers This Week</label>
                   <input
                     type="number"
@@ -223,8 +231,13 @@ function TeamOptimizer() {
                     max="15"
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                   />
+                  {showFreeTransferTooltip && (
+                    <div className="absolute top-0 lg:left-full md:left-36 ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 md:block lg:block hidden">
+                      The number of free transfers you have this week. Extra transfers cost 4 points
+                      so are only suggested if worthwhile.
+                    </div>
+                  )}
                 </div>
-
 
                 <div
                   className="relative"
@@ -243,7 +256,7 @@ function TeamOptimizer() {
                   />
                   {showTransferSuggestionTooltip && (
                     <div className="absolute top-0 lg:left-full md:left-36 ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 md:block lg:block hidden">
-                      The number of transfer suggestions to provide. The more requested, the longer the calculation will take.
+                      The number of different transfer suggestions to provide. The more requested, the longer the calculation will take.
                     </div>
                   )}
                 </div>
@@ -256,56 +269,110 @@ function TeamOptimizer() {
                   </div>
                 )} */}
 
+                <div>
+                  {/* Dropdown Trigger and Content */}
+                  <div
+                    className="cursor-pointer text-sm font-semibold text-gray-500 flex items-center justify-start border-b border-gray-300 pb-2"
+                    onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                  >
+                    <span>Further Settings</span>
+                    <span
+                      className={`ml-2 transform transition-transform duration-200 ${isSettingsOpen ? "rotate-0" : "-rotate-90"
+                        }`}
+                    >
+                      ▼
+                    </span>
+                  </div>
 
+                  <div
+                    className={`${isSettingsOpen ? "max-h-screen overflow-visible" : "max-h-0 overflow-hidden"
+                      }`}
+                  >
+                    <div className="mt-4 space-y-4">
+                      <div
+                        className="relative"
+                        onMouseEnter={() => setShowBudgetTooltip(true)}
+                        onMouseLeave={() => setShowBudgetTooltip(false)}
+                      >
+                        <label className="block text-sm font-semibold text-gray-700">Budget (£m)</label>
+                        <input
+                          type="number"
+                          name="total_budget"
+                          value={formData.total_budget}
+                          onChange={handleInputChange}
+                          min="90"
+                          max="110"
+                          step="0.1"
+                          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        />
+                        {showBudgetTooltip && (
+                          <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                            Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
+                            the total value of your squad. You may need to tweak your budget down if you have players with lower sale
+                            price than current price.
+                          </div>
+                        )}
+                      </div>
 
-                <div className="relative" onMouseEnter={() => setShowBudgetTooltip(true)} onMouseLeave={() => setShowBudgetTooltip(false)}>
-                  <label className="block text-sm font-semibold text-gray-700">Budget (£m)</label>
-                  <input
-                    type="number"
-                    name="total_budget"
-                    value={formData.total_budget}
-                    onChange={handleInputChange}
-                    min="90"
-                    max="110"
-                    step="0.1"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                  {showBudgetTooltip && (
-                    <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
-                      Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
-                      the total value of your squad. You may need to tweak your budget down if you have players with lower sale
-                      price than current price.
+                      <div
+                        className="relative"
+                        onMouseEnter={() => setForceIncludeTooltip(true)}
+                        onMouseLeave={() => setForceIncludeTooltip(false)}>
+                        <label className="block text-sm font-semibold text-gray-700">Override The Genius: Final Team Must Include</label>
+                        <Select
+                          isMulti
+                          name="must_include"
+                          options={playersList}
+                          isLoading={isPlayersLoading}
+                          onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
+                          className="mt-1"
+                          placeholder="Type to search players..."
+                          menuPortalTarget={document.body} // Ensures the menu is rendered in the body for higher z-index
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999, // Increase z-index for the dropdown
+                            }),
+                          }}
+                        />
+                        {showForceIncludeTooltip && (
+                          <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                            Think you know better? 
+                            If there are players you want your final team to include, put them here.
+                          </div>
+                        )}
+                      </div>
+
+                      <div
+                        className="relative"
+                        onMouseEnter={() => setForceExcludeTooltip(true)}
+                        onMouseLeave={() => setForceExcludeTooltip(false)}>
+                        <label className="block text-sm font-semibold text-gray-700">Override The Genius: Final Team Must Exclude</label>
+                        <Select
+                          isMulti
+                          name="must_exclude"
+                          options={playersList}
+                          isLoading={isPlayersLoading}
+                          onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
+                          className="mt-1"
+                          placeholder="Type to search players..."
+                          menuPortalTarget={document.body} // Ensures the menu is rendered in the body for higher z-index
+                          styles={{
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999, // Increase z-index for the dropdown
+                            }),
+                          }}
+                        />
+                        {showForceExcludeTooltip && (
+                          <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-60 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                            Think you know better?
+                            If there are players you don't want in your final team, put them here.
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                </div>
-
-
-                {/* Must Include Players */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700">Final Team Must Include</label>
-                  <Select
-                    isMulti
-                    name="must_include"
-                    options={playersList}
-                    isLoading={isPlayersLoading}
-                    onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
-                    className="mt-1"
-                    placeholder="Type to search players..."
-                  />
-                </div>
-
-                {/* Must Exclude Players */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700">Final Team Must Exclude</label>
-                  <Select
-                    isMulti
-                    name="must_exclude"
-                    options={playersList}
-                    isLoading={isPlayersLoading}
-                    onChange={(selectedOptions, actionMeta) => handleSelectChange(selectedOptions, actionMeta)}
-                    className="mt-1"
-                    placeholder="Type to search players..."
-                  />
+                  </div>
                 </div>
 
                 <button
@@ -408,7 +475,7 @@ function TeamOptimizer() {
               ) : (
                 <div className="h-full flex items-center justify-center text-gray-400 text-center">
                   <p>
-                    Load and Optimize your team to see your best starting XI.<br />
+                    Load and Optimize your team to see your transfers and your best starting XI.<br />
                     If no team is loaded, the best team for this budget will be displayed.
                   </p>
                 </div>
@@ -419,7 +486,7 @@ function TeamOptimizer() {
 
         <div className="mt-8">
           <h2 className="text-2xl font-bold text-gray-700 text-center mb-2">Top Players</h2>
-          <h3 className="text-xl font-bold text-gray-700 text-center mb-6">Genius Predicted Score - Next 5 Gameweeks</h3>
+          <h3 className="text-xl font-bold text-gray-700 text-center mb-6">Genius Predicted Points Per Game - Next 5 Gameweeks</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Goalkeepers */}
             <div className="space-y-6">

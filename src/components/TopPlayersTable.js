@@ -8,8 +8,8 @@ const TopPlayersTable = ({ players, position }) => {
         <thead>
           <tr>
             <th className="px-4 py-2 font-semibold">Player</th>
-            <th className="px-4 py-2 font-semibold">Cost (£m)</th>
-            <th className="px-4 py-2 font-semibold">Predicted Points</th>
+            <th className="px-4 py-2 font-semibold">Cost</th>
+            <th className="px-4 py-2 font-semibold">Points</th>
           </tr>
         </thead>
         <tbody>
