@@ -33,6 +33,7 @@ function TeamOptimizer() {
   const [showBudgetTooltip, setShowBudgetTooltip] = useState(false);
   const [showTeamIdTooltip, setShowTeamIdTooltip] = useState(false);
   const [showTransferSuggestionTooltip, setTransferSuggestionTooltip] = useState(false);
+  
 
   const handleSelectChange = (selectedOptions, actionMeta) => {
     const { name } = actionMeta;
@@ -141,46 +142,15 @@ function TeamOptimizer() {
     <div className="absolute top-0 z-[-2] min-h-screen w-screen bg-slate-50 bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)] py-12">
       {/* <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-900 py-12"> */}
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-6xl font-bold text-slate-900 text-center mb-12">FPL Genius</h1>
+        <h1 className="text-6xl font-bold text-slate-900 text-center mb-6">FPL Genius</h1>
+        <h3 className="text-2xl font-bold text-slate-900 text-center mb-12">Smart Transfers for Maximum Points: Load Your Team to Start</h3>
 
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             {/* Left Column - Form */}
             <div className="p-8">
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700">Free Transfers</label>
-                  <input
-                    type="number"
-                    name="free_transfers"
-                    value={formData.free_transfers}
-                    onChange={handleInputChange}
-                    min="0"
-                    max="15"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                </div>
 
-                <div className="relative" onMouseEnter={() => setShowBudgetTooltip(true)} onMouseLeave={() => setShowBudgetTooltip(false)}>
-                  <label className="block text-sm font-semibold text-gray-700">Budget (£m)</label>
-                  <input
-                    type="number"
-                    name="total_budget"
-                    value={formData.total_budget}
-                    onChange={handleInputChange}
-                    min="90"
-                    max="110"
-                    step="0.1"
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                  />
-                  {showBudgetTooltip && (
-                    <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
-                      Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
-                      the total value of your squad. You may need to tweak your budget down if you have players with lower sale
-                      price than current price.
-                    </div>
-                  )}
-                </div>
 
                 <div className="relative" onMouseEnter={() => setShowTeamIdTooltip(true)} onMouseLeave={() => setShowTeamIdTooltip(false)}>
                   <label className="block text-sm font-semibold text-gray-700">
@@ -242,12 +212,18 @@ function TeamOptimizer() {
                   )}
                 </div>
 
-                {formData.current_team && (
-                  <div className="p-4 bg-blue-50 rounded-md">
-                    <h4 className="font-medium text-blue-900">Current Team Loaded</h4>
-                    <p className="text-sm text-blue-700">Team loaded as of last gameweek</p>
-                  </div>
-                )}
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700"># Free Transfers This Week</label>
+                  <input
+                    type="number"
+                    name="free_transfers"
+                    value={formData.free_transfers}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="15"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                </div>
 
 
                 <div
@@ -255,7 +231,7 @@ function TeamOptimizer() {
                   onMouseEnter={() => setTransferSuggestionTooltip(true)}
                   onMouseLeave={() => setTransferSuggestionTooltip(false)}
                 >
-                  <label className="block text-sm font-semibold text-gray-700"># Transfer Suggestions</label>
+                  <label className="block text-sm font-semibold text-gray-700"># Genius Transfer Suggestions</label>
                   <input
                     type="number"
                     name="num_suggestions"
@@ -271,6 +247,38 @@ function TeamOptimizer() {
                     </div>
                   )}
                 </div>
+
+
+                {/* {formData.current_team && (
+                  <div className="p-4 bg-blue-50 rounded-md">
+                    <h4 className="font-medium text-blue-900">Current Team Loaded</h4>
+                    <p className="text-sm text-blue-700">Team loaded as of last gameweek</p>
+                  </div>
+                )} */}
+
+
+
+                <div className="relative" onMouseEnter={() => setShowBudgetTooltip(true)} onMouseLeave={() => setShowBudgetTooltip(false)}>
+                  <label className="block text-sm font-semibold text-gray-700">Budget (£m)</label>
+                  <input
+                    type="number"
+                    name="total_budget"
+                    value={formData.total_budget}
+                    onChange={handleInputChange}
+                    min="90"
+                    max="110"
+                    step="0.1"
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                  />
+                  {showBudgetTooltip && (
+                    <div className="absolute top-0 md:left-36 lg:left-full ml-2 w-48 bg-gray-800 text-white text-xs rounded-lg p-2 shadow-lg z-50 lg:block md:block hidden">
+                      Enter your budget in million pounds (£m). Once your team is loaded the budget will update with
+                      the total value of your squad. You may need to tweak your budget down if you have players with lower sale
+                      price than current price.
+                    </div>
+                  )}
+                </div>
+
 
                 {/* Must Include Players */}
                 <div>
@@ -305,7 +313,7 @@ function TeamOptimizer() {
                   disabled={loading}
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
                 >
-                  {loading ? 'Optimizing...' : 'Unleash the Genius'}
+                  {loading ? 'Optimizing...' : 'Get my transfers'}
                 </button>
               </form>
 
