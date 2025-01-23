@@ -22,7 +22,7 @@ function TeamOptimizer() {
 
   const playersList = playersData
     ? playersData.map((player) => ({
-      label: player.web_name, // Display name in the dropdown
+      label: player.full_name, // Display name in the dropdown
       value: player.id,   // Unique ID for form submission
     }))
     : [];
