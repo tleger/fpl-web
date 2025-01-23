@@ -396,54 +396,58 @@ function TeamOptimizer() {
                   {result?.best_result.transfers_in?.length > 0 && (
                     <div className="bg-gray-50 rounded-lg p-4">
                       <h4 className="font-medium text-gray-900 mb-3">Transfer Suggestions</h4>
-                      {/* Header Row */}
-                      <div className="grid grid-cols-3 gap-6 h-6 items-end">
-                        <h5 className="text-sm font-medium text-green-600 mb-2">Transfers In</h5>
-                        <h5 className="text-sm font-medium text-red-600 mb-2">Transfers Out</h5>
-                        <h5 className="text-sm font-medium text-gray-600 mb-2">Points Per Gameweek</h5>
+
+                      {/* Header Row - hidden on small screens, shown on sm+ */}
+                      <div className="hidden sm:grid sm:grid-cols-3 sm:gap-2 sm:items-end">
+                        <h5 className="text-sm font-medium text-green-600 mb-2 ml-2">Transfers In</h5>
+                        <h5 className="text-sm font-medium text-red-600 mb-2 ml-2">Transfers Out</h5>
+                        <h5 className="text-sm font-medium text-gray-600 mb-2 ml-2">Points Per Gameweek</h5>
                       </div>
 
                       {result.transfers_in.map((optionSetIn, index) => (
-                        <div key={index}>
-                          <div className="grid grid-cols-3 gap-6">
-                            <div>
-                              {optionSetIn.map(player => (
-                                <div key={player.id} className="flex justify-between text-green-600 text-sm">
-                                  <span>{player.web_name}</span>
-                                  <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                        <div key={index} className="grid grid-cols-1 gap-2 sm:grid-cols-3 mb-2">
+
+                          {/* On small screens, show “Transfers In” heading before the column */}
+                          <div className="sm:hidden text-sm font-semibold text-green-600">Transfers In</div>
+                          <div>
+                            {optionSetIn.map(player => (
+                              <div key={player.id} className="flex justify-between text-green-600 text-sm ml-2">
+                                <span>{player.web_name}</span>
+                                <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="sm:hidden text-sm font-semibold text-red-600">Transfers Out</div>
+                          <div>
+                            {result.transfers_out[index].map(player => (
+                              <div key={player.id} className="flex justify-between text-red-600 text-sm ml-2">
+                                <span>{player.web_name}</span>
+                                <span>£{(player.now_cost / 10).toFixed(1)}m</span>
+                              </div>
+                            ))}
+                          </div>
+
+                          <div className="sm:hidden text-sm font-semibold text-gray-600">Points Per Gameweek</div>
+                          <div>
+                            {optionSetIn.map((inPlayer, i) => {
+                              const outPlayer = result.transfers_out[index][i];
+                              if (!outPlayer) return null;
+
+                              const pointDifference = inPlayer.forecast_points_8ft_5gw - outPlayer.forecast_points_8ft_5gw;
+                              return (
+                                <div key={inPlayer.id} className="flex justify-between text-gray-600 text-sm ml-2">
+                                  <span className="sm:hidden">
+                                    {inPlayer.web_name} {'->'} {outPlayer.web_name}:
+                                  </span>
+                                  <span>{pointDifference >= 0 ? `+${pointDifference.toFixed(1)}` : pointDifference.toFixed(1)}</span>
                                 </div>
-                              ))}
-                            </div>
-
-                            <div>
-                              {result.transfers_out[index].map(player => (
-                                <div key={player.id} className="flex justify-between text-red-600 text-sm">
-                                  <span>{player.web_name}</span>
-                                  <span>£{(player.now_cost / 10).toFixed(1)}m</span>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Column 3: Points Difference */}
-                            <div>
-                              {optionSetIn.map((inPlayer, i) => {
-                                const outPlayer = result.transfers_out[index][i];
-                                if (!outPlayer) return null; // handle if not present
-
-                                const pointDifference = inPlayer.forecast_points_8ft_5gw - outPlayer.forecast_points_8ft_5gw;
-                                return (
-                                  <div key={inPlayer.id} className="flex justify-between text-gray-600 text-sm">
-                                    <span>
-                                      {pointDifference >= 0 ? `+${pointDifference.toFixed(1)}` : pointDifference.toFixed(1)}
-                                    </span>
-                                  </div>
-                                );
-                              })}
-                            </div>
+                              );
+                            })}
                           </div>
 
                           {index < result.transfers_in.length - 1 && (
-                            <hr className="border-t border-gray-300 my-2" />
+                            <hr className="border-t border-gray-300 sm:col-span-3" />
                           )}
                         </div>
                       ))}
